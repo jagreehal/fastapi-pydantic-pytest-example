@@ -1,0 +1,27 @@
+### GET all todos
+GET http://localhost:8000/
+
+
+### POST a new todo
+POST http://localhost:8000/
+Content-Type: application/json
+
+{
+  "name": "Buy groceries",
+  "completed": false
+}
+
+### GET a specific todo by ID
+GET http://localhost:8000/1
+
+### PUT update a specific todo by ID
+PUT http://localhost:8000/1
+Content-Type: application/json
+
+{
+  "name": "Buy groceries",
+  "completed": true
+}
+
+### DELETE a specific todo by ID
+DELETE http://localhost:8000/1
