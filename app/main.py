@@ -36,8 +36,7 @@ async def read_todo(todo_id: str):
 
 @app.put("/{todo_id}", response_model=Todo)
 async def update_todo(todo_id: str, updated_todo: Todo):
-    todo = todos.get(todo_id)
-    if todo is None:
+    if todo_id not in todos:
         raise HTTPException(status_code=404, detail="Todo not found")
     todos[todo_id] = updated_todo
     return updated_todo
@@ -45,8 +44,6 @@ async def update_todo(todo_id: str, updated_todo: Todo):
 
 @app.delete("/{todo_id}", response_model=Todo)
 async def delete_todo(todo_id: str):
-    todo = todos.get(todo_id)
-    if todo is None:
+    if todo_id not in todos:
         raise HTTPException(status_code=404, detail="Todo not found")
-    del todos[todo_id]
-    return todo
+    return todos.pop(todo_id)
