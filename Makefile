@@ -8,7 +8,7 @@ install-dev:
 
 # Run the application
 run:
-	pipenv run uvicorn app.main:app --reload --port 5000
+	pipenv run uvicorn app.main:app --reload --port $${PORT:-5000}
 
 # Run tests with pytest
 test:
@@ -43,7 +43,7 @@ sort-imports:
 	pipenv run isort app/
 
 # Watch tests
-watch-tests:
+test-watch:
 	pipenv run ptw
 
 # Run all code quality checks

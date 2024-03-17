@@ -1,9 +1,12 @@
+
+@port = {{$dotenv PORT}}
+
 ### GET all todos
-GET http://localhost:8000/
+GET http://localhost:{{port}}/
 
 
 ### POST a new todo
-POST http://localhost:8000/
+POST http://localhost:{{port}}/
 Content-Type: application/json
 
 {
@@ -12,10 +15,10 @@ Content-Type: application/json
 }
 
 ### GET a specific todo by ID
-GET http://localhost:8000/1
+GET http://localhost:{{port}}/1
 
 ### PUT update a specific todo by ID
-PUT http://localhost:8000/1
+PUT http://localhost:{{port}}/1
 Content-Type: application/json
 
 {
@@ -24,4 +27,4 @@ Content-Type: application/json
 }
 
 ### DELETE a specific todo by ID
-DELETE http://localhost:8000/1
+DELETE http://localhost:{{port}}/1
