@@ -3,8 +3,6 @@ from fastapi.testclient import TestClient
 
 from .main import Todo, app, todos
 
-# client = TestClient(app)
-
 
 @pytest.fixture(scope="function")
 def client():
@@ -17,7 +15,7 @@ def setup_function():
     todos.clear()
 
 
-buy_groceries_json = Todo(name="Buy groceries")
+buy_groceries_json = Todo(name="Buy groceries").model_dump()
 
 
 def test_getTodos_whenNoTodosExist_shouldReturnEmptyList(client):

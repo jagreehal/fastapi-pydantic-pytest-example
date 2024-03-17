@@ -9,7 +9,7 @@ def setup_function():
     todos.clear()
 
 
-buy_groceries_json = Todo(name="Buy groceries")
+buy_groceries_json = Todo(name="Buy groceries").model_dump()
 
 
 def test_getTodos_whenNoTodosExist_shouldReturnEmptyList():
