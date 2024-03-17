@@ -1,43 +1,48 @@
-# Define the base image for the builder stage
-FROM python:3.11-slim AS builder
+# Use a specific version of the Python slim image for consistent builds
+FROM python:3.11.1-slim AS builder
 
-# Set environment variables
+# Prevent Python from writing pyc files to disc and buffering stdout and stderr
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Install system dependencies
-RUN apt-get update \
-  && apt-get install --no-install-recommends -y gcc libpq-dev \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+# Install system dependencies required for building Python packages
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    gcc \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory in Docker
 WORKDIR /app
 
-# Install pipenv
-RUN pip install --upgrade pip \
-  && pip install pipenv
+# Upgrade pip and install pipenv
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir pipenv
 
-# Copy the Pipfile and Pipfile.lock into the container
+# Install project dependencies using Pipfile and Pipfile.lock
 COPY Pipfile Pipfile.lock ./
-
-# Install project dependencies into the root of the project
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
-# Define the base image for the final stage
-FROM python:3.11-slim
+# Start a new stage from a slim version of the Python image
+FROM python:3.11.1-slim
 
-# Copy virtual environment from the builder stage
+# Copy the virtual environment from the builder stage
 COPY --from=builder /app/.venv /app/.venv
 
-# Set environment path to include the virtual environment
+# Ensure scripts in .venv are usable:
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Set the working directory in Docker
 WORKDIR /app
 
 # Copy the application code into the container
 COPY app app
 
-# Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+# Use an environment variable for the application port
+ENV PORT=80
+
+# Create a non-root user for running the application
+RUN useradd --create-home appuser
+USER appuser
+
+# Use the exec form of CMD to ensure signals are properly handled by uvicorn
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
+
