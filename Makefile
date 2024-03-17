@@ -26,6 +26,10 @@ shell:
 lint:
 	pipenv run flake8 app/
 
+# Type checking with mypy
+type-check:
+	pipenv run mypy app/
+
 # Remove the pipenv environment
 clean:
 	pipenv --rm
@@ -47,6 +51,6 @@ test-watch:
 	pipenv run ptw
 
 # Run all code quality checks
-quality: lint check check-format
+quality: lint check check-format type-check
 
-.PHONY: install install-dev run test check shell lint clean format check-format sort-imports watch-tests quality
+.PHONY: install install-dev run test check shell lint clean format check-format sort-imports watch-tests quality type-check
